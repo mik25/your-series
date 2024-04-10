@@ -33,7 +33,7 @@ function readJSONFile(filename) {
 
 // Load multiple JSON files for series data
 const seriesDataFiles = fs.readdirSync(__dirname)
-    .filter(file => file.startsWith('series_data') && file.endsWith('.json'));
+    .filter(file => file.startsWith('organized_series_data') && file.endsWith('.json'));
 
 const seriesData = seriesDataFiles.reduce((accumulator, filename) => {
     const data = readJSONFile(filename);
