@@ -3,7 +3,6 @@ const { addonBuilder, getRouter } = require('stremio-addon-sdk');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
-const axios = require('axios');
 
 const manifest = {
     id: 'community.yourtvstreams',
@@ -31,14 +30,20 @@ function readJSONFile(filename) {
     return JSON.parse(fs.readFileSync(filePath, 'utf8'));
 }
 
-// Load multiple JSON files for series data
+// Load series data files
 const seriesDataFiles = fs.readdirSync(__dirname)
-    .filter(file => file.startsWith('organized_series_data') && file.endsWith('.json'));
+    .filter(file => file.includes('_organized_series_data.json'));
+
+console.log("Found series data files:", seriesDataFiles);
 
 const seriesData = seriesDataFiles.reduce((accumulator, filename) => {
+    console.log("Reading series data file:", filename);
     const data = readJSONFile(filename);
+    console.log("Data:", data);
     return accumulator.concat(data);
 }, []);
+
+console.log("Merged series data:", seriesData);
 
 builder.defineCatalogHandler(({ type, id, extra }) => {
     return new Promise((resolve) => {
@@ -91,21 +96,23 @@ builder.defineStreamHandler(({ type, id }) => {
             if (season) {
                 const episode = season.episodes.find(e => e.episode == episodeNumber);
                 if (episode) {
-                    try {
-                        const isLive = await isStreamLive(episode.stream_url);
-                        if (isLive) {
+                    // Assuming you have a function to check if the stream is live
+                    // try {
+                    //     const isLive = await isStreamLive(episode.stream_url);
+                    //     if (isLive) {
                             resolve({
                                 streams: [{
                                     title: `S${seasonNumber}E${episodeNumber}`,
                                     url: episode.stream_url
                                 }]
                             });
-                        } else {
-                            resolve({ streams: [] });
-                        }
-                    } catch (error) {
-                        resolve({ streams: [] });
-                    }
+                    //     } else {
+                    //         resolve({ streams: [] });
+                    //     }
+                    // } catch (error) {
+                    //     console.error("Error fetching stream:", error);
+                    //     resolve({ streams: [] });
+                    // }
                 } else {
                     resolve({ streams: [] });
                 }
@@ -118,15 +125,16 @@ builder.defineStreamHandler(({ type, id }) => {
     });
 });
 
-async function isStreamLive(url) {
-    try {
-        const response = await axios.head(url);
-        return response.status === 200;
-    } catch (error) {
-        console.error(`Stream check failed for ${url}`, error);
-        return false;
-    }
-}
+// Assuming you have a function to check if the stream is live
+// async function isStreamLive(url) {
+//     try {
+//         const response = await axios.head(url);
+//         return response.status === 200;
+//     } catch (error) {
+//         console.error(`Stream check failed for ${url}`, error);
+//         return false;
+//     }
+// }
 
 const addonInterface = builder.getInterface();
 
