@@ -7,7 +7,7 @@ const path = require('path');
 const manifest = {
     id: 'community.yourtvstreams',
     version: '1.0.0',
-    name: 'HY TV Streams',
+    name: 'Fight Club',
     description: 'Stream TV series',
     resources: ['catalog', 'stream', 'meta'],
     types: ['series'],
@@ -16,7 +16,7 @@ const manifest = {
         {
             type: 'series',
             id: 'yourtvstreams',
-            name: 'TV Streams',
+            name: 'Fight Club',
             extraSupported: ['search']
         }
     ]

@@ -1,0 +1,1 @@
+http://madstreams.info:8080/get.php?username=Adam2022&password=8775Adam44&type=m3u&output=ts
